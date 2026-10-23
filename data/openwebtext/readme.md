@@ -1,7 +1,7 @@
 
 ## openwebtext dataset
 
-after running `prepare.py` (preprocess) we get:
+after running `prepare.js` (node data/openwebtext/prepare.js) we get:
 
 - train.bin is ~17GB, val.bin ~8.5MB
 - train has ~9B tokens (9,035,582,198)
