@@ -9,6 +9,59 @@
 **Update Nov 2025** nanoGPT has a new and improved cousin called [nanochat](https://github.com/karpathy/nanochat). It is very likely you meant to use/find nanochat instead. nanoGPT (this repo) is now very old and deprecated but I will leave it up for posterity.
 
 ---
+# Node.js port
+
+This repository has been **fully converted to Node.js** using [TensorFlow.js](https://www.tensorflow.org/js) (`@tensorflow/tfjs-node`). The original Python implementation is kept in the repo for reference (`model.py`, `train.py`, `sample.py`, `bench.py`, `config/*.py`, `data/*/prepare.py`); the JavaScript files are the primary, active implementation and mirror the Python files one-to-one:
+
+| Python | Node.js |
+| ------ | ------- |
+| `model.py` | `model.js` |
+| `train.py` | `train.js` |
+| `sample.py` | `sample.js` |
+| `bench.py` | `bench.js` |
+| `configurator.py` | `configurator.js` |
+| `config/*.py` | `config/*.js` |
+| `data/*/prepare.py` | `data/*/prepare.js` |
+
+## install (Node.js)
+
+Requires Node.js >= 18. Then:
+
+```sh
+bun install   # or npm install
+```
+
+Dependencies: `@tensorflow/tfjs-node` (tensors + autograd via native TF bindings) and `js-tiktoken` (GPT-2 BPE tokenizer).
+
+Notes vs the PyTorch version:
+
+- The node backend runs in **float32 on CPU** (or on NVIDIA GPUs if you install `@tensorflow/tfjs-node-gpu` and pass a `gpu` device). `--dtype=bfloat16/float16`, `--compile` (torch.compile) and DDP/torchrun multi-GPU have no equivalent here and are ignored with a warning.
+- `wandb` logging is not ported ( TensorFlow.js has no adapter); configs that reference it are accepted for compatibility.
+
+## quick start (Node.js)
+
+Same flow as the Python quick start:
+
+```sh
+node data/shakespeare_char/prepare.js        # pm run prepare:shakespeare_char
+node train.js config/train_shakespeare_char.js --device=cpu
+node sample.js --out_dir=out-shakespeare-char --device=cpu
+```
+
+On a CPU you'll want to dial the model down, exactly like the macbook example above:
+
+```sh
+node train.js config/train_shakespeare_char.js --device=cpu --eval_iters=20 --log_interval=1 \
+    --block_size=64 --batch_size=12 --n_layer=4 --n_head=4 --n_embd=128 --max_iters=2000 \
+    --lr_decay_iters=2000 --dropout=0.0
+node sample.js --out_dir=out-shakespeare-char --device=cpu
+```
+
+Checkpointing: instead of `ckpt.pt`, each `out_dir` holds `ckpt.json` + `ckpt.bin` (model weights, optimizer state, and the original metadata), and each data dir holds `meta.json` instead of `meta.pkl`.
+
+Loading OpenAI GPT-2 pretrained weights for finetuning (`--init_from=gpt2-xl`) works too: `model.js` downloads `model.safetensors` from huggingface, converts the Conv1D weights, and ties it just like the Python version.
+
+---
 
 The simplest, fastest repository for training/finetuning medium-sized GPTs. It is a rewrite of [minGPT](https://github.com/karpathy/minGPT) that prioritizes teeth over education. Still under active development, but currently the file `train.py` reproduces GPT-2 (124M) on OpenWebText, running on a single 8XA100 40GB node in about 4 days of training. The code itself is plain and readable: `train.py` is a ~300-line boilerplate training loop and `model.py` a ~300-line GPT model definition, which can optionally load the GPT-2 weights from OpenAI. That's it.
 

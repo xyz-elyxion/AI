@@ -10,3 +10,12 @@ __pycache__/
 input.txt
 env/
 venv/
+
+# Node.js
+node_modules/
+out/
+out-*/
+.hf-cache/
+mtx.data
+package-lock.json
+bun.lock

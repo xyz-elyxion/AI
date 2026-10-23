@@ -1,0 +1,22 @@
+{
+  "name": "nanogpt-nodejs",
+  "version": "1.0.0",
+  "description": "Node.js port of nanoGPT (training/sampling medium-sized GPTs) using TensorFlow.js",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "train": "node train.js",
+    "sample": "node sample.js",
+    "bench": "node bench.js",
+    "prepare:shakespeare_char": "node data/shakespeare_char/prepare.js",
+    "prepare:shakespeare": "node data/shakespeare/prepare.js",
+    "prepare:openwebtext": "node data/openwebtext/prepare.js"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "hyparquet": "^1.31.5",
+    "js-tiktoken": "^1.0.19"
+  }
+}
