@@ -7,7 +7,7 @@
  * repo's train.js pipeline — no external LLM API) plus a list of tools.
  *
  * Usage:
- *   agentkit create <name> [--template starter|coder|researcher]
+ *   agentkit create <name> [--template starter|coder|researcher|own]
  *   agentkit list
  *   agentkit run <name> --task "do a thing" [--max-turns N]
  *   agentkit chat <name>                   (interactive)
@@ -72,7 +72,7 @@ async function main() {
 const USAGE = `AgentKit — build AI agents on locally-trained brains (no LLM API needed)
 
 Commands:
-  agentkit create <name> [--template starter|coder|researcher]
+  agentkit create <name> [--template starter|coder|researcher|own]
   agentkit list
   agentkit show <name>
   agentkit run <name> --task "..." [--max-turns N]
@@ -97,6 +97,11 @@ const TEMPLATES = {
     description: 'reads files and fetches web pages to answer questions',
     brain: { type: 'nano', checkpoint: 'out-demo', dataset: 'tutorial', temperature: 0.3, top_k: 5, max_new_tokens: 48 },
     tools: ['calc', 'read_file', 'list_dir', 'http_get'],
+  },
+  own: {
+    description: 'task agent on a brain trained from your own corpus (data/own)',
+    brain: { type: 'nano', checkpoint: 'out-own', dataset: 'own', temperature: 0.3, top_k: 5, max_new_tokens: 48 },
+    tools: ['calc', 'read_file', 'write_file', 'exec', 'list_dir', 'http_get'],
   },
 };
 

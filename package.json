@@ -14,6 +14,7 @@
     "test": "node --test test/*.test.mjs",
     "train": "node train.js",
     "corpus": "node data/tutorial/make-corpus.mjs && node data/tutorial/prepare.js",
+    "prepare:own": "node data/own/prepare.js",
     "prepare:openwebtext": "node data/openwebtext/prepare.js"
   },
   "dependencies": {

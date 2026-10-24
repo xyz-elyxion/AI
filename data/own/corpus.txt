@@ -1,0 +1,24 @@
+Paste your own text here, then run:
+
+  node data/own/prepare.js && node train.js config/own_brain.js
+
+Anything you paste becomes the brain: its writing style, its knowledge, and —
+if you include task transcripts like the example below — its ability to use
+tools. Plain writing alone makes a chat-style brain; transcripts make a
+task-doing one, so mix in as many as feel natural:
+
+[user] what is 6*7?
+[Agent] I can compute that.
+act: calc(6*7)
+[observed] calc(6*7) -> 42
+[Agent] That's 42.
+
+[user] save "hello world" to notes.txt
+[Agent] I'll write it.
+act: write_file("notes.txt", "hello world")
+[observed] write_file -> wrote notes.txt
+[Agent] Saved to notes.txt.
+
+Replace the demo lines with examples relevant to what YOUR AI should do —
+the more your examples look like real conversations you expect, the more the
+trained agent behaves like them.
