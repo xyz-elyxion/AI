@@ -11,13 +11,14 @@
   },
   "scripts": {
     "agentkit": "node agentkit/cli.js",
-    "test": "node --test test/agentkit.test.mjs",
+    "test": "node --test test/*.test.mjs",
     "train": "node train.js",
     "corpus": "node data/tutorial/make-corpus.mjs && node data/tutorial/prepare.js",
     "prepare:openwebtext": "node data/openwebtext/prepare.js"
   },
   "dependencies": {
     "@tensorflow/tfjs-node": "^4.22.0",
+    "discord.js": "^14.27.0",
     "hyparquet": "^1.12.1",
     "js-tiktoken": "^1.0.21"
   }

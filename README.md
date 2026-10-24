@@ -100,7 +100,48 @@ node agentkit/cli.js chat my-agent
 Every run/chat appends a transcript to `.agentkit/<agent>/<session>.jsonl`
 (you can replay or inspect them; `--no-save` skips writing).
 
-## 5. Tools
+## 5. Put the agent on Discord
+
+Agents can serve the same think-act loop over the Discord gateway — the bot is
+just another channel into `runAgent`, so the manifest, brain, and tools are
+identical to sections 3–4.
+
+**Setup (once):**
+
+1. Create an application → bot at https://discord.com/developers/applications
+   (Bot → Add Bot).
+2. On the same Bot page, enable the **MESSAGE CONTENT** privileged intent
+   (required — without it bot accounts never receive message text).
+3. Copy the bot token and set it in the environment as `DISCORD_BOT_TOKEN`
+   (Settings → Environment here; keep it out of the repo).
+4. Invite the bot to your server via OAuth2 → URL Generator (scopes `bot`,
+   permission Send Messages; no administrator needed).
+
+**Start the bot:**
+
+```sh
+DISCORD_BOT_TOKEN=... node agentkit/cli.js discord my-agent
+```
+
+The gateway client connects, prints `[discord] <name> online as <tag>`, and
+then responds to any message that mentions the bot, or any DM (stripping the
+mention text itself). Transcripts are persisted per Discord channel to
+`.agentkit/<name>/discord-<channelId>.jsonl`, the same session format as CLI
+runs.
+
+Behavior details, all in `agentkit/discord.js`:
+
+- mention or DM only — it never jumps into other conversations
+- the reply is chunked to fit Discord's 2000-char message limit
+- several messages arriving quickly are processed strictly one at a time
+  (each triggers one full agent run; no concurrent generations)
+- a run that raises is reported back to the channel as `⚠ agent failed: …`
+  instead of crashing the bot
+
+Then the bot's replies are exactly what `agentkit run` would print as the
+final answer — same loop, same tools, same `act:` protocol.
+
+## 6. Tools
 
 `agentkit tools` lists the built-ins:
 
@@ -133,7 +174,7 @@ brain, add transcripts of your own into `data/tutorial/corpus.txt` (same
 `[user] / [Agent] ... act: ... [observed] ...` shape), regenerate, and
 retrain. The runtime does not care how the model learned to emit the lines.
 
-## 6. Tune quality
+## 7. Tune quality
 
 - Generation randomness/focus: `temperature` (lower = more literal),
   `top_k` (1 = greedy memorization).
@@ -147,11 +188,12 @@ retrain. The runtime does not care how the model learned to emit the lines.
   point the same manifest at any stronger checkpoint you train, and everything
   else keeps working.
 
-## 7. Under the hood (what each file is)
+## 8. Under the hood (what each file is)
 
 | file | role |
 | ---- | ---- |
-| `agentkit/cli.js` | the CLI entry (create / list / show / run / chat / tools) |
+| `agentkit/cli.js` | the CLI entry (create / list / show / run / chat / discord / tools) |
+| `agentkit/discord.js` | Discord gateway channel: mention/DM → agent run → reply |
 | `agentkit/agent.js` | manifest validation + the think-act loop + session store |
 | `agentkit/brains.js` | brain adapters (`nano` checkpoint runtime, `mock` for tests) |
 | `agentkit/tools.js` | built-in tools + `act:` protocol parser |
@@ -162,7 +204,7 @@ retrain. The runtime does not care how the model learned to emit the lines.
 | `train.js` | the trainer the brains are built with |
 | `data/` | corpus prep scripts (`tutorial` here; `openwebtext` for full-scale training) |
 
-## 8. Testing
+## 9. Testing
 
 ```sh
 bun run test

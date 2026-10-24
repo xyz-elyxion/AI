@@ -11,6 +11,7 @@
  *   agentkit list
  *   agentkit run <name> --task "do a thing" [--max-turns N]
  *   agentkit chat <name>                   (interactive)
+ *   agentkit discord <name>                (run as a Discord bot outside)
  *   agentkit tools
  *   agentkit show <name>
  */
@@ -54,6 +55,8 @@ async function main() {
       return cmdList();
     case 'chat':
       return cmdChat(rest[0]);
+    case 'discord':
+      return cmdDiscord(rest[0]);
     case 'run':
       return cmdRun();
     case 'show':
@@ -74,6 +77,7 @@ Commands:
   agentkit show <name>
   agentkit run <name> --task "..." [--max-turns N]
   agentkit chat <name>
+  agentkit discord <name>                (run as a Discord bot)
   agentkit tools
 
 Agents live in ${AGENTS_DIR}/<name>.agent.json; sessions in .agentkit/.`;
@@ -147,6 +151,21 @@ async function cmdShow(name) {
 
 function cmdTools() {
   for (const t of listTools()) console.log(describeTool(t));
+}
+
+async function cmdDiscord(name) {
+  const manifest = await requireAgent(name);
+  if (!manifest) return;
+  const token = process.env.DISCORD_BOT_TOKEN;
+  if (!token) {
+    console.error('DISCORD_BOT_TOKEN is not set (Settings → Environment). Create an app at');
+    console.error('https://discord.com/developers/applications, enable the MESSAGE CONTENT intent,');
+    console.error('make a bot token and set it, then: agentkit discord ' + name);
+    return 1;
+  }
+  console.log(`starting ${name} as a Discord bot (brain: ${manifest.brain.type}, tools: [${manifest.tools.join(', ')}])`);
+  const { startDiscordAgent } = await import('./discord.js');
+  await startDiscordAgent(manifest);
 }
 
 async function requireAgent(name) {
