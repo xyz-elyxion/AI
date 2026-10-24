@@ -6,6 +6,7 @@
  */
 
 import fs from 'node:fs';
+import './node-compat.js';
 import * as tf from '@tensorflow/tfjs-node';
 
 export class U16Memmap {

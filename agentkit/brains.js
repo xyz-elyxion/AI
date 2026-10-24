@@ -15,6 +15,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { encodingForModel } from 'js-tiktoken';
+import '../node-compat.js';
 
 let lazyTf = null;
 async function getTf() {

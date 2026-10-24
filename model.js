@@ -13,6 +13,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
+import './node-compat.js';
 import * as tf from '@tensorflow/tfjs-node';
 
 const LN_EPS = 1e-5;

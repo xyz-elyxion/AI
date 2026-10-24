@@ -10,6 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { performance } from 'node:perf_hooks';
+import './node-compat.js';
 import * as tf from '@tensorflow/tfjs-node';
 
 import { GPTConfig, GPT, saveCheckpoint, loadCheckpoint } from './model.js';
