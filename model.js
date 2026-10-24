@@ -332,11 +332,12 @@ export class GPT {
   }
 
   buildCausalMask(T) {
-    // lower triangular: allowed positions carry 0, disallowed -infinity
+    // lower triangular (allowed j <= i, like torch.tril): allowed positions
+    // carry 0, disallowed -infinity
     const cond = tf.greaterEqual(
-      tf.expandDims(tf.range(0, T, 1, 'int32'), 0),
-      tf.expandDims(tf.range(0, T, 1, 'int32'), 1)
-    );
+      tf.expandDims(tf.range(0, T, 1, 'int32'), 1), // rows: i
+      tf.expandDims(tf.range(0, T, 1, 'int32'), 0)  // cols: j
+    ); // cond[i][j] = (i >= j)
     const mask = tf.where(
       cond,
       tf.zeros([T, T]),

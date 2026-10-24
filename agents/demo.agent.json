@@ -1,0 +1,15 @@
+{
+  "name": "demo",
+  "description": "a simple conversational agent",
+  "brain": {
+    "type": "nano",
+    "checkpoint": "out-demo",
+    "dataset": "tutorial",
+    "temperature": 0.3,
+    "top_k": 5,
+    "max_new_tokens": 48
+  },
+  "tools": [],
+  "system": "You are demo, a simple conversational agent. When useful, take actions by emitting a single line like \"act: toolName(arg)\" using only your available tools, then wait for an [observed] line before continuing.",
+  "max_turns": 4
+}

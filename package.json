@@ -1,22 +1,24 @@
 {
-  "name": "nanogpt-nodejs",
+  "name": "agentkit",
   "version": "1.0.0",
-  "description": "Node.js port of nanoGPT (training/sampling medium-sized GPTs) using TensorFlow.js",
+  "description": "AgentKit — build AI agents on locally-trained brains (nanoGPT on TensorFlow.js), no LLM API needed",
   "type": "module",
+  "bin": {
+    "agentkit": "agentkit/cli.js"
+  },
   "engines": {
     "node": ">=18"
   },
   "scripts": {
+    "agentkit": "node agentkit/cli.js",
+    "test": "node --test test/agentkit.test.mjs",
     "train": "node train.js",
-    "sample": "node sample.js",
-    "bench": "node bench.js",
-    "prepare:shakespeare_char": "node data/shakespeare_char/prepare.js",
-    "prepare:shakespeare": "node data/shakespeare/prepare.js",
+    "corpus": "node data/tutorial/make-corpus.mjs && node data/tutorial/prepare.js",
     "prepare:openwebtext": "node data/openwebtext/prepare.js"
   },
   "dependencies": {
     "@tensorflow/tfjs-node": "^4.22.0",
-    "hyparquet": "^1.31.5",
-    "js-tiktoken": "^1.0.19"
+    "hyparquet": "^1.12.1",
+    "js-tiktoken": "^1.0.21"
   }
 }

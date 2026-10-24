@@ -10,3 +10,4 @@ node_modules/
 .hf-cache/
 package-lock.json
 bun.lock
+.agentkit/
